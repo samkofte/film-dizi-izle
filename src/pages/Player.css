@@ -1,0 +1,888 @@
+.player-page {
+  min-height: 100vh;
+  background: #0f0f23;
+}
+
+/* Player Header */
+.player-header {
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.player-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.content-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.streaming-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.streaming-btn:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+}
+
+/* Player Container */
+.player-container {
+  padding: 30px 0;
+}
+
+.player-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Video Player */
+.video-player {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.video-player iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.player-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.player-placeholder svg {
+  margin-bottom: 15px;
+}
+
+.player-placeholder p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Player Error */
+.player-error {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.player-error h3 {
+  color: #dc3545;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.player-error p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-actions .btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.error-actions .btn-primary {
+  background: #667eea;
+  color: white;
+  border: none;
+}
+
+.error-actions .btn-primary:hover {
+  background: #5a6fd8;
+  transform: translateY(-2px);
+}
+
+.error-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.error-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Streaming Options */
+.streaming-options {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.streaming-options h3 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.stream-sources {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stream-source {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 13px;
+}
+
+.stream-source:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.stream-source.active {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.stream-source.current {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.stream-source .current-indicator {
+  color: #28a745;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.stream-source .recommended {
+  color: #ffc107;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.streaming-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.streaming-info p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  font-size: 14px;
+}
+
+.streaming-info .btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.streaming-info .btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Content Info */
+.content-info {
+  display: flex;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.content-poster {
+  flex-shrink: 0;
+  width: 120px;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.content-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-details {
+  flex: 1;
+}
+
+.content-details h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.content-overview {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.content-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 14px;
+}
+
+.content-year {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.content-rating {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+/* Season Episode Selector */
+.season-episode-selector {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.season-episode-selector h3 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.selector-controls {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.season-selector,
+.episode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.season-selector label,
+.episode-selector label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.season-selector select,
+.episode-selector select {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.season-selector select:focus,
+.episode-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.season-selector select option,
+.episode-selector select option {
+  background: #1a1a2e;
+  color: white;
+}
+
+/* External Streaming */
+.external-streaming {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.external-streaming h3 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.external-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.external-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 13px;
+}
+
+.external-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Error Page */
+.error-page {
+  text-align: center;
+  padding: 80px 20px;
+  color: white;
+}
+
+.error-page h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.error-page p {
+  margin-bottom: 30px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .player-header-content {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .content-title {
+    font-size: 1.2rem;
+  }
+  
+  .player-container {
+    padding: 20px 0;
+  }
+  
+  .content-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .content-poster {
+    width: 100px;
+    height: 150px;
+    margin: 0 auto;
+  }
+  
+  .content-details h2 {
+    font-size: 1.3rem;
+  }
+  
+  .stream-sources,
+  .external-links {
+    gap: 8px;
+  }
+  
+  .stream-source,
+  .external-link {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-header {
+    padding: 10px 0;
+  }
+  
+  .content-title {
+    font-size: 1rem;
+  }
+  
+  .streaming-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .video-player {
+    border-radius: 8px;
+  }
+  
+  .streaming-options,
+  .content-info,
+  .external-streaming {
+    padding: 15px;
+  }
+  
+  .content-details h2 {
+    font-size: 1.1rem;
+  }
+  
+  .content-overview {
+    font-size: 14px;
+  }
+  
+  .content-meta {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+/* Subtitle Controls */
+.subtitle-controls {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subtitle-controls h3 {
+  color: white;
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.subtitle-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subtitle-list label {
+  color: #ccc;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.subtitle-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subtitle-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtitle-item {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtitle-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.subtitle-item.active {
+  background: rgba(74, 144, 226, 0.3);
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.default-badge {
+  background: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.remove-subtitle {
+  background: rgba(244, 67, 54, 0.3);
+  border: 1px solid rgba(244, 67, 54, 0.5);
+  color: #f44336;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.remove-subtitle:hover {
+  background: rgba(244, 67, 54, 0.5);
+  border-color: #f44336;
+}
+
+.subtitle-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upload-area {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.upload-label {
+  display: block;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+  color: #4a90e2;
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-text {
+  display: block;
+  padding: 10px;
+  background: rgba(74, 144, 226, 0.2);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 6px;
+  color: #4a90e2;
+  font-weight: 500;
+}
+
+.upload-info {
+  color: #999;
+  font-size: 12px;
+  margin: 10px 0 0 0;
+}
+
+.selected-subtitle-info {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.selected-subtitle-info p {
+  color: #4caf50;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Video Container */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subtitle-controls {
+    padding: 15px;
+  }
+  
+  .subtitle-options {
+    gap: 15px;
+  }
+  
+  .subtitle-item {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .upload-area {
+    padding: 15px;
+  }
+}
+
+/* Watch Progress Indicator */
+.watch-progress-info {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.watch-progress-info h3 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.progress-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8B5CF6, #A855F7);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+/* OpenSubtitles Integration */
+.opensubtitles-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.subtitle-search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.subtitle-search-header h4 {
+  color: #fff;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.available-subtitles {
+  margin-top: 15px;
+}
+
+.available-subtitles label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.subtitle-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subtitle-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+.subtitle-result:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.subtitle-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.subtitle-lang {
+  background: #8B5CF6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+
+.subtitle-name {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  flex: 1;
+}
+
+.subtitle-downloads {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.no-subtitles {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.no-subtitles p {
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .subtitle-search-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .subtitle-result {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .subtitle-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+.progress-text span:first-child {
+  font-weight: 600;
+  color: #8B5CF6;
+}
+
+@media (max-width: 768px) {
+  .watch-progress-info {
+    padding: 15px;
+  }
+  
+  .progress-text {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+}
