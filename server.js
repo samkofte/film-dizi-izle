@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('dist'));
+app.use(express.static(path.resolve(__dirname, 'dist')));
 
 // Güvenlik ayarları
 const SECURITY_CONFIG = {
@@ -954,7 +954,8 @@ Gerçek altyazı entegrasyonu için API geliştirmesi gerekiyor.`;
 app.get('*', (req, res) => {
   // Eğer API route'u değilse, frontend index.html'i serve et
   if (!req.path.startsWith('/api/')) {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    const indexPath = path.resolve(__dirname, 'dist', 'index.html');
+    res.sendFile(indexPath);
   } else {
     res.status(404).json({ error: 'API endpoint not found' });
   }
