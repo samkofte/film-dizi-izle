@@ -41,6 +41,46 @@ const TVDetail = () => {
     }
   };
 
+  const addToRecentlyWatched = () => {
+    try {
+      const recentItem = {
+        id: tvShow.id,
+        title: tvShow.name,
+        poster_path: tvShow.poster_path,
+        backdrop_path: tvShow.backdrop_path,
+        vote_average: tvShow.vote_average,
+        first_air_date: tvShow.first_air_date,
+        overview: tvShow.overview,
+        type: 'tv',
+        season: selectedSeason,
+        episode: selectedEpisode,
+        watchedAt: new Date().toISOString()
+      };
+
+      let recentlyWatched = [];
+      const stored = localStorage.getItem('recentlyWatched');
+      if (stored) {
+        recentlyWatched = JSON.parse(stored);
+      }
+
+      // Remove if already exists
+      recentlyWatched = recentlyWatched.filter(item => !(item.id === tvShow.id && item.type === 'tv'));
+      
+      // Add to beginning
+      recentlyWatched.unshift(recentItem);
+      
+      // Keep only last 20 items
+      recentlyWatched = recentlyWatched.slice(0, 20);
+      
+      localStorage.setItem('recentlyWatched', JSON.stringify(recentlyWatched));
+      
+      // Trigger storage event for other tabs
+      window.dispatchEvent(new Event('storage'));
+    } catch (error) {
+      console.error('Error adding to recently watched:', error);
+    }
+  };
+
   const fetchStreamingData = async () => {
     setStreamingLoading(true);
     try {
@@ -136,17 +176,15 @@ const TVDetail = () => {
               </div>
 
               <div className="tv-actions">
-                <Link to={`/watch/tv/${tvShow.id}/${selectedSeason}/${selectedEpisode}`} className="btn btn-primary">
-                  <Play size={20} />
-                  İzle (embed.su)
-                </Link>
-                <button 
-                  className="btn btn-secondary"
-                  onClick={fetchStreamingData}
-                  disabled={streamingLoading}
+                <Link 
+                  to={`/watch/tv/${tvShow.id}/${selectedSeason}/${selectedEpisode}`} 
+                  className="btn btn-primary"
+                  onClick={addToRecentlyWatched}
                 >
-                  {streamingLoading ? 'Yükleniyor...' : 'Streaming Linkleri'}
-                </button>
+                  <Play size={20} />
+                  İzle
+                </Link>
+               
               </div>
 
               {/* Sezon ve Bölüm Seçimi */}
@@ -408,4 +446,4 @@ const TVDetail = () => {
   );
 };
 
-export default TVDetail; 
+export default TVDetail;

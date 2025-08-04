@@ -11,15 +11,19 @@ const TVSeries = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [genres, setGenres] = useState([]);
+  const [selectedProvider, setSelectedProvider] = useState('');
+  const [providers, setProviders] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [filterType, setFilterType] = useState('genre'); // 'genre' or 'provider'
 
   useEffect(() => {
     fetchGenres();
+    fetchProviders();
   }, []);
 
   useEffect(() => {
     fetchTVShows();
-  }, [page, selectedGenre]);
+  }, [page, selectedGenre, selectedProvider]);
 
   const fetchGenres = async () => {
     try {
@@ -31,12 +35,28 @@ const TVSeries = () => {
     }
   };
 
+  const fetchProviders = async () => {
+    try {
+      const response = await fetch('/api/providers');
+      const data = await response.json();
+      setProviders(data.results || []);
+    } catch (error) {
+      console.error('Error fetching providers:', error);
+    }
+  };
+
   const fetchTVShows = async () => {
     setLoading(true);
     try {
-      const url = selectedGenre 
-        ? `/api/tv/genre/${selectedGenre}?page=${page}`
-        : `/api/tv/popular?page=${page}`;
+      let url;
+      
+      if (selectedProvider) {
+        url = `/api/tv/provider/${selectedProvider}?page=${page}`;
+      } else if (selectedGenre) {
+        url = `/api/tv/genre/${selectedGenre}?page=${page}`;
+      } else {
+        url = `/api/tv/popular?page=${page}`;
+      }
       
       const response = await fetch(url);
       const data = await response.json();
@@ -52,6 +72,13 @@ const TVSeries = () => {
 
   const handleGenreChange = (genreId) => {
     setSelectedGenre(genreId);
+    setSelectedProvider(''); // Clear provider when genre is selected
+    setPage(1);
+  };
+
+  const handleProviderChange = (providerId) => {
+    setSelectedProvider(providerId);
+    setSelectedGenre(''); // Clear genre when provider is selected
     setPage(1);
   };
 
@@ -106,26 +133,74 @@ const TVSeries = () => {
         {/* Filters */}
         {showFilters && (
           <div className="filters-section">
-            <div className="genre-filters">
-              <h3>Kategoriler</h3>
-              <div className="genre-buttons">
-                <button 
-                  className={`genre-btn ${selectedGenre === '' ? 'active' : ''}`}
-                  onClick={() => handleGenreChange('')}
-                >
-                  Tümü
-                </button>
-                {genres.map((genre) => (
-                  <button
-                    key={genre.id}
-                    className={`genre-btn ${selectedGenre === genre.id.toString() ? 'active' : ''}`}
-                    onClick={() => handleGenreChange(genre.id)}
-                  >
-                    {genre.name}
-                  </button>
-                ))}
-              </div>
+            {/* Filter Type Selector */}
+            <div className="filter-type-selector">
+              <button 
+                className={`filter-type-btn ${filterType === 'genre' ? 'active' : ''}`}
+                onClick={() => setFilterType('genre')}
+              >
+                Türler
+              </button>
+              <button 
+                className={`filter-type-btn ${filterType === 'provider' ? 'active' : ''}`}
+                onClick={() => setFilterType('provider')}
+              >
+                Platformlar
+              </button>
             </div>
+
+            {/* Genre Filters */}
+            {filterType === 'genre' && (
+              <div className="genre-filters">
+                <h3>Dizi Türleri</h3>
+                <div className="genre-buttons">
+                  <button 
+                    className={`genre-btn ${selectedGenre === '' ? 'active' : ''}`}
+                    onClick={() => handleGenreChange('')}
+                  >
+                    Tümü
+                  </button>
+                  {genres.map((genre) => (
+                    <button
+                      key={genre.id}
+                      className={`genre-btn ${selectedGenre === genre.id.toString() ? 'active' : ''}`}
+                      onClick={() => handleGenreChange(genre.id)}
+                    >
+                      {genre.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Provider Filters */}
+            {filterType === 'provider' && (
+              <div className="provider-filters">
+                <h3>Streaming Platformları</h3>
+                <div className="provider-buttons">
+                  <button 
+                    className={`provider-btn ${selectedProvider === '' ? 'active' : ''}`}
+                    onClick={() => handleProviderChange('')}
+                  >
+                    Tümü
+                  </button>
+                  {providers.map((provider) => (
+                    <button
+                      key={provider.provider_id}
+                      className={`provider-btn ${selectedProvider === provider.provider_id.toString() ? 'active' : ''}`}
+                      onClick={() => handleProviderChange(provider.provider_id)}
+                    >
+                      <img 
+                        src={`https://image.tmdb.org/t/p/w45${provider.logo_path}`} 
+                        alt={provider.provider_name}
+                        className="provider-logo"
+                      />
+                      {provider.provider_name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -184,4 +259,4 @@ const TVSeries = () => {
   );
 };
 
-export default TVSeries; 
+export default TVSeries;

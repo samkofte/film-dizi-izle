@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const ImprovedWatchPartyServer = require('./src/server/improvedWatchPartyServer');
 require('dotenv').config(); // Environment variables
 
 const app = express();
@@ -796,6 +797,88 @@ app.get('/api/tv/genre/:genreId', async (req, res) => {
   }
 });
 
+// Get streaming providers
+app.get('/api/providers', async (req, res) => {
+  try {
+    // Use hardcoded popular streaming providers for now
+    const providers = [
+      { provider_id: 8, provider_name: "Netflix", logo_path: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg" },
+      { provider_id: 337, provider_name: "Disney Plus", logo_path: "/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg" },
+      { provider_id: 15, provider_name: "Hulu", logo_path: "/giwM8XX4V2AQb9vsoN7yti82tKK.jpg" },
+      { provider_id: 9, provider_name: "Amazon Prime Video", logo_path: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg" },
+      { provider_id: 384, provider_name: "HBO Max", logo_path: "/Ajqyt5aNxNGjmF9uOfxArGrdf3X.jpg" },
+      { provider_id: 350, provider_name: "Apple TV Plus", logo_path: "/6uhKBfmtzFqOcLousHwZuzcrScK.jpg" }
+    ];
+    
+    console.log('Hardcoded Providers:', providers.length);
+    res.json({ results: providers });
+  } catch (error) {
+    console.error('Provider fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch streaming providers' });
+  }
+});
+
+// Get movies by streaming provider
+app.get('/api/movies/provider/:providerId', async (req, res) => {
+  try {
+    const { providerId } = req.params;
+    const { page = 1 } = req.query;
+    const data = await fetchTMDBData(`/discover/movie?with_watch_providers=${providerId}&watch_region=TR&page=${page}`);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch movies by provider' });
+  }
+});
+
+// Get TV series by streaming provider
+app.get('/api/tv/provider/:providerId', async (req, res) => {
+  try {
+    const { providerId } = req.params;
+    const { page = 1 } = req.query;
+    const data = await fetchTMDBData(`/discover/tv?with_watch_providers=${providerId}&watch_region=TR&page=${page}`);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch TV series by provider' });
+  }
+});
+
+// Get combined content by streaming provider
+app.get('/api/content/provider/:providerId', async (req, res) => {
+  try {
+    const { providerId } = req.params;
+    const { page = 1, type = 'all' } = req.query;
+    
+    if (type === 'movie') {
+      const data = await fetchTMDBData(`/discover/movie?with_watch_providers=${providerId}&watch_region=TR&page=${page}`);
+      res.json(data);
+    } else if (type === 'tv') {
+      const data = await fetchTMDBData(`/discover/tv?with_watch_providers=${providerId}&watch_region=TR&page=${page}`);
+      res.json(data);
+    } else {
+      // Both movies and TV series
+      const [movies, tv] = await Promise.all([
+        fetchTMDBData(`/discover/movie?with_watch_providers=${providerId}&watch_region=TR&page=${page}`),
+        fetchTMDBData(`/discover/tv?with_watch_providers=${providerId}&watch_region=TR&page=${page}`)
+      ]);
+      
+      // Combine and sort by popularity
+      const combined = [
+        ...movies.results.map(item => ({ ...item, media_type: 'movie' })),
+        ...tv.results.map(item => ({ ...item, media_type: 'tv' }))
+      ].sort((a, b) => b.popularity - a.popularity);
+      
+      res.json({
+        results: combined,
+        total_pages: Math.max(movies.total_pages, tv.total_pages),
+        total_results: movies.total_results + tv.total_results,
+        page: parseInt(page)
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch content by provider' });
+  }
+});
+
 // OpenSubtitles API Integration
 app.post('/api/subtitles/search', async (req, res) => {
   try {
@@ -885,3 +968,7 @@ app.listen(PORT, () => {
   console.log(`Frontend: http://localhost:3000`);
   console.log(`Backend API: http://localhost:${PORT}/api`);
 });
+
+// Start Improved Watch Party Server
+const watchPartyServer = new ImprovedWatchPartyServer(8080);
+console.log('Improved Watch Party Server started on port 8080');

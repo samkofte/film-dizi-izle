@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Play, ExternalLink } from 'lucide-react';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, Play, ExternalLink, Users } from 'lucide-react';
+import WatchParty from '../components/WatchParty';
 import './Player.css';
 
 const Player = () => {
   const { type, id, season, episode } = useParams();
+  const [searchParams] = useSearchParams();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [streamingData, setStreamingData] = useState(null);
@@ -21,6 +23,8 @@ const Player = () => {
   const [watchProgress, setWatchProgress] = useState(null);
   const [availableSubtitles, setAvailableSubtitles] = useState([]);
   const [loadingSubtitles, setLoadingSubtitles] = useState(false);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [showWatchParty, setShowWatchParty] = useState(false);
 
   // Yeni player servisleri
   const PLAYER_SERVICES = [
@@ -123,9 +127,9 @@ const Player = () => {
   useEffect(() => {
     if (type === 'tv' && selectedStream) {
       // Player URL'sini güncelle
-      const currentSource = streamingSources.find(s => s.url === selectedStream);
+      const currentSource = streamingSources.find(s => s.type === selectedStream);
       if (currentSource) {
-        setSelectedStream(currentSource.url);
+        setSelectedStream(currentSource.type);
       }
     }
     // Yeni bölüm için kaydedilmiş ilerlemeyi yükle
@@ -136,7 +140,45 @@ const Player = () => {
   useEffect(() => {
     const handleMessage = (event) => {
       try {
-        // Videasy player'dan gelen mesajları kontrol et
+        // VidRock player'dan gelen mesajları kontrol et
+        if (event.origin === 'https://vidrock.net') {
+          // Player event'lerini işle
+          if (event.data?.type === 'PLAYER_EVENT') {
+            const { event: eventType, currentTime, duration, tmdbId, mediaType, season, episode } = event.data.data;
+            console.log(`VidRock Player ${eventType} at ${currentTime}s of ${duration}s`);
+            
+            // Progress verisi varsa kaydet
+            if (currentTime && duration) {
+              const progressData = {
+                currentTime,
+                duration,
+                progress: (currentTime / duration) * 100,
+                tmdbId,
+                mediaType,
+                season,
+                episode
+              };
+              
+              setWatchProgress(progressData);
+              
+              // LocalStorage'a kaydet
+              const storageKey = `watch_progress_${type}_${id}_${selectedSeason || 1}_${selectedEpisode || 1}`;
+              localStorage.setItem(storageKey, JSON.stringify({
+                ...progressData,
+                lastWatched: new Date().toISOString()
+              }));
+            }
+          }
+          
+          // Media data'yı işle
+          if (event.data?.type === 'MEDIA_DATA') {
+            const mediaData = event.data.data;
+            localStorage.setItem('vidRockProgress', JSON.stringify(mediaData));
+            console.log('VidRock media data saved:', mediaData);
+          }
+        }
+        
+        // Videasy player'dan gelen mesajları kontrol et (backward compatibility)
         if (typeof event.data === 'string') {
           const progressData = JSON.parse(event.data);
           
@@ -166,31 +208,56 @@ const Player = () => {
     };
   }, [type, id, selectedSeason, selectedEpisode]);
 
+  // URL'den party parametresini kontrol et
+  useEffect(() => {
+    const partyId = searchParams.get('party');
+    const autoJoin = searchParams.get('autoJoin');
+    
+    console.log('🔍 URL parametreleri kontrol ediliyor:', { partyId, autoJoin });
+    
+    if (partyId && autoJoin === 'true') {
+      // Party ID ve autoJoin varsa otomatik olarak watch party'yi aç
+      console.log('🚀 Otomatik party açılıyor:', partyId);
+      setShowWatchParty(true);
+      
+      // VidRock player'ı otomatik olarak seç
+      const vidRockService = PLAYER_SERVICES.find(service => service.type === 'vidrock');
+      if (vidRockService) {
+        console.log('🎬 VidRock player seçiliyor:', vidRockService.type);
+        setSelectedStream(vidRockService.type);
+        setCurrentPlayer(vidRockService.name);
+      }
+    } else if (partyId) {
+      // Sadece party ID varsa normal şekilde watch party'yi aç
+      console.log('🚪 Manuel party açılıyor:', partyId);
+      setShowWatchParty(true);
+    }
+  }, [searchParams, type, id, selectedSeason, selectedEpisode]);
+
   const loadStreamingSources = async () => {
     try {
-      const response = await fetch(`/api/stream/${type}/${id}${type === 'tv' ? `/${selectedSeason}/${selectedEpisode}` : ''}`);
-      const data = await response.json();
-      
-      // Yeni player servislerini kullan
+      // API endpoint'i olmadığı için direkt varsayılan kaynakları kullan
       const sources = PLAYER_SERVICES.map(service => ({
         name: service.name,
-        url: service.url,
+        url: service.type, // type'ı url olarak kullan
         type: service.type
       }));
       
+      console.log('Streaming sources loaded:', sources);
       setStreamingSources(sources);
-      setSelectedStream(sources[0].url); // İlk kaynağı seç
+      setSelectedStream(sources[0].type); // İlk kaynağın type'ını seç
       setCurrentSourceIndex(0);
+      console.log('Selected stream:', sources[0].type);
     } catch (error) {
       console.error('Error loading streaming sources:', error);
       // Hata durumunda varsayılan kaynakları kullan
       const defaultSources = PLAYER_SERVICES.map(service => ({
         name: service.name,
-        url: service.url,
+        url: service.type,
         type: service.type
       }));
       setStreamingSources(defaultSources);
-      setSelectedStream(defaultSources[0].url);
+      setSelectedStream(defaultSources[0].type);
     }
   };
 
@@ -225,6 +292,112 @@ const Player = () => {
       setSeasons(data.seasons || []);
     } catch (error) {
       console.error('Error fetching seasons:', error);
+    }
+  };
+
+  const getPlayerUrlByType = (serviceType) => {
+    const serviceConfig = PLAYER_SERVICES.find(s => s.type === serviceType);
+    if (!serviceConfig) return '';
+
+    console.log('Getting player URL for type:', serviceType, 'Config:', serviceConfig);
+
+    switch (serviceConfig.type) {
+      case 'vidfast':
+        // VidFast için URL oluştur
+        if (type === 'tv') {
+          return `https://vidfast.pro/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidfast.pro/movie/${id}`;
+      
+      case 'vidjoy':
+        // VidJoy için URL oluştur
+        if (type === 'tv') {
+          return `https://vidjoy.pro/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidjoy.pro/embed/movie/${id}`;
+      
+      case '111movies':
+        // 111Movies için URL oluştur
+        if (type === 'tv') {
+          return `https://111movies.com/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://111movies.com/movie/${id}`;
+      
+      case 'vidrock':
+        // VidRock için URL oluştur
+        if (type === 'tv') {
+          return `https://vidrock.net/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidrock.net/embed/movie/${id}`;
+      
+      case 'vidsrc':
+        // VidSrc için URL oluştur
+        if (type === 'tv') {
+          return `https://vidsrc.cc/v2/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidsrc.cc/v2/embed/movie/${id}`;
+      
+      case 'vidlink':
+        // VidLink için URL oluştur
+        if (type === 'tv') {
+          return `https://vidlink.pro/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidlink.pro/movie/${id}`;
+      
+      case 'mappletv':
+        // MappleTV için URL oluştur
+        if (type === 'tv') {
+          return `https://mappletv.uk/watch/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://mappletv.uk/watch/movie/${id}`;
+      
+      case 'vidora':
+        // Vidora için URL oluştur
+        if (type === 'tv') {
+          return `https://vidora.su/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://vidora.su/embed/movie/${id}`;
+      
+      case 'vidzee':
+        // VidZee için URL oluştur
+        if (type === 'tv') {
+          return `https://player.vidzee.wtf/embed/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://player.vidzee.wtf/embed/movie/${id}`;
+      
+      case 'videasy':
+        // Videasy için gelişmiş URL formatı - Videasy.net dokümantasyonuna göre
+        if (type === 'tv') {
+          const params = new URLSearchParams({
+            dub: 'true',
+            nextEpisode: 'true',
+            autoplayNextEpisode: 'true',
+            episodeSelector: 'true',
+            color: '8B5CF6' // Purple theme
+          });
+          return `https://player.videasy.net/tv/${id}/${selectedSeason}/${selectedEpisode}?${params.toString()}`;
+        }
+        const movieParams = new URLSearchParams({
+          color: '8B5CF6' // Purple theme
+        });
+        return `https://player.videasy.net/movie/${id}?${movieParams.toString()}`;
+      
+      case 'superembed':
+        // SuperEmbed için TMDB ID ile URL oluştur
+        if (type === 'tv') {
+          return `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${selectedSeason}&e=${selectedEpisode}`;
+        }
+        return `https://multiembed.mov/?video_id=${id}&tmdb=1`;
+      
+      case 'moviesapi':
+        // MoviesAPI için URL oluştur
+        if (type === 'tv') {
+          return `https://moviesapi.club/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+        }
+        return `https://moviesapi.club/movie/${id}`;
+      
+      default:
+        return '';
     }
   };
 
@@ -352,9 +525,16 @@ const Player = () => {
     return true;
   };
 
-  const handleStreamChange = (domain) => {
-    setSelectedStream(domain);
+  const handleStreamChange = (serviceType) => {
+    setSelectedStream(serviceType);
     setError(null);
+    
+    // currentPlayer'ı güncelle
+    const selectedService = PLAYER_SERVICES.find(service => service.type === serviceType);
+    if (selectedService) {
+      setCurrentPlayer(selectedService.name);
+    }
+    console.log('Stream changed to:', serviceType);
   };
 
   const tryNextSource = () => {
@@ -364,7 +544,7 @@ const Player = () => {
       
       console.log(`Sonraki kaynak deneniyor: ${nextSource.name} (${nextIndex + 1}/${streamingSources.length})`);
       setCurrentSourceIndex(nextIndex);
-      setSelectedStream(nextSource.url);
+      setSelectedStream(nextSource.type);
       setError(null);
       
       // Eğer tüm kaynaklar denendiyse hata mesajı göster
@@ -596,13 +776,22 @@ const Player = () => {
               Geri Dön
             </Link>
             <h1 className="content-title">{getContentTitle()}</h1>
-            <button 
-              className="streaming-btn"
-              onClick={fetchStreamingData}
-            >
-              <ExternalLink size={20} />
-              Streaming Linkleri
-            </button>
+            <div className="header-buttons">
+              <button 
+                className="watch-party-btn"
+                onClick={() => setShowWatchParty(true)}
+              >
+                <Users size={20} />
+                Birlikte İzle
+              </button>
+              <button 
+                className="streaming-btn"
+                onClick={fetchStreamingData}
+              >
+                <ExternalLink size={20} />
+                Streaming Linkleri
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -616,7 +805,7 @@ const Player = () => {
               {selectedStream ? (
                 <div className="video-container">
                   <iframe
-                    src={getPlayerUrl(selectedStream)}
+                    src={getPlayerUrlByType(selectedStream)}
                     title={getContentTitle()}
                     frameBorder="0"
                     allowFullScreen
@@ -706,9 +895,9 @@ const Player = () => {
               <div className="stream-sources">
                 {streamingSources.map((source, index) => (
                   <button
-                    key={source.url}
-                    className={`stream-source ${selectedStream === source.url ? 'active' : ''} ${index === currentSourceIndex ? 'current' : ''}`}
-                    onClick={() => handleStreamChange(source.url)}
+                    key={source.type}
+                    className={`stream-source ${selectedStream === source.type ? 'active' : ''} ${index === currentSourceIndex ? 'current' : ''}`}
+                    onClick={() => handleStreamChange(source.type)}
                   >
                     <span className="source-name">{source.name}</span>
                     {index === currentSourceIndex && <span className="current-indicator">●</span>}
@@ -927,6 +1116,19 @@ const Player = () => {
           </div>
         </div>
       </div>
+      
+      {/* Watch Party Modal */}
+      {showWatchParty && (
+        <WatchParty
+          onClose={() => setShowWatchParty(false)}
+          contentId={id}
+          contentType={type}
+          season={selectedSeason}
+          episode={selectedEpisode}
+          currentPlayer={currentPlayer}
+          initialPartyId={searchParams.get('party')}
+        />
+      )}
     </div>
   );
 };

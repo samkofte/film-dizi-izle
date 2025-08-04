@@ -1,205 +1,232 @@
-# VidSrc - Film ve Dizi İzleme Sitesi
+# 🎬 Film & Dizi İzle -  Streaming Platform
 
-Modern, responsive bir film ve dizi izleme web sitesi. TMDB API'si ile içerik bilgilerini ve VidSrc API'si ile streaming linklerini kullanır.
+Modern ve kullanıcı dostu bir film ve dizi izleme platformu. TMDB API entegrasyonu ile güncel içerikler ve çoklu streaming servisleri desteği.
 
-## 🚀 Özellikler
+## ✨ Özellikler
 
-- **Modern UI/UX**: Koyu tema ile modern ve responsive tasarım
-- **Film ve Dizi Kataloğu**: TMDB API entegrasyonu ile güncel içerik
-- **Streaming Entegrasyonu**: VidSrc API ile çoklu streaming kaynağı
-- **Arama Sistemi**: Gelişmiş film ve dizi arama
-- **Kategori Filtreleme**: Tür bazında filtreleme
-- **Responsive Tasarım**: Mobil ve desktop uyumlu
-- **Detaylı Sayfalar**: Film/dizi detay sayfaları
-- **Player Entegrasyonu**: Gömülü video player
+- 🎭 **Geniş İçerik Kütüphanesi**: Filmler ve TV dizileri
+- 🔍 **Gelişmiş Arama**: Başlık, tür ve yıla göre filtreleme
+- 📱 **Responsive Tasarım**: Tüm cihazlarda mükemmel görünüm
+- 🎨 **Modern UI/UX**: Temiz ve sezgisel arayüz
+- 🌐 **Çoklu Dil Desteği**: Türkçe içerik ve arayüz
+- ⚡ **Hızlı Yükleme**: Optimize edilmiş performans
+- 🎯 **Kategori Filtreleme**: Türlere göre içerik keşfi
+- 📄 **Sayfalama**: Kolay navigasyon
 
-## 🛠️ Teknolojiler
-
-### Backend
-- **Node.js** - Server runtime
-- **Express.js** - Web framework
-- **Axios** - HTTP client
-- **CORS** - Cross-origin resource sharing
+## 🚀 Teknolojiler
 
 ### Frontend
-- **React** - UI library
-- **React Router** - Client-side routing
-- **Vite** - Build tool
-- **Lucide React** - Icon library
-- **CSS3** - Styling
+- **React 18** - Modern UI kütüphanesi
+- **Vite** - Hızlı geliştirme ortamı
+- **CSS3** - Responsive tasarım
+- **Axios** - HTTP istekleri
 
-### APIs
+### Backend
+- **Node.js** - Server-side JavaScript
+- **Express.js** - Web framework
 - **TMDB API** - Film ve dizi verileri
-- **VidSrc API** - Streaming linkleri
+- **Cheerio** - HTML parsing
+- **CORS** - Cross-origin resource sharing
 
 ## 📦 Kurulum
 
 ### Gereksinimler
 - Node.js (v16 veya üzeri)
 - npm veya yarn
+- TMDB API anahtarı
 
-### 1. Projeyi Klonlayın
+### Adımlar
+
+1. **Repository'yi klonlayın**
 ```bash
-git clone <repository-url>
-cd vidsrc-streaming-site
+git clone https://github.com/samkofte/film-dizi-izle.git
+cd film-dizi-izle
 ```
 
-### 2. Bağımlılıkları Yükleyin
+2. **Bağımlılıkları yükleyin**
 ```bash
 npm install
 ```
 
-### 3. TMDB API Key Ayarlama
-`server.js` dosyasında API key'i ayarlayın:
-
-```javascript
-const TMDB_API_KEY = 'your_tmdb_api_key_here'; // Buraya TMDB API key'inizi yazın
-```
-
-**TMDB API Key almak için:**
-1. [TMDB](https://www.themoviedb.org/) sitesine gidin
-2. Hesap oluşturun
-3. Settings > API bölümünden API key alın
-4. Aldığınız key'i `server.js` dosyasındaki `TMDB_API_KEY` değişkenine yazın
-
-### 4. Geliştirme Sunucusunu Başlatın
-
-**Backend (Terminal 1):**
+3. **Environment variables'ları ayarlayın**
 ```bash
-npm start
+cp .env.example .env
 ```
 
-**Frontend (Terminal 2):**
+`.env` dosyasını düzenleyin:
+```env
+# TMDB Configuration
+TMDB_API_KEY=your_tmdb_api_key_here
+
+# Server Configuration
+PORT=5000
+
+# Agora Configuration (opsiyonel)
+VITE_AGORA_APP_ID=your_agora_app_id_here
+```
+
+4. **Uygulamayı başlatın**
 ```bash
 npm run dev
 ```
 
-### 5. Tarayıcıda Açın
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+## 🌐 Render.com Deployment
 
-## 🏗️ Proje Yapısı
+### Otomatik Deployment
 
-```
-vidsrc-streaming-site/
-├── src/
-│   ├── components/          # React bileşenleri
-│   │   ├── Header.jsx      # Navigasyon header
-│   │   ├── MovieCard.jsx   # Film/dizi kartı
-│   │   └── ...
-│   ├── pages/              # Sayfa bileşenleri
-│   │   ├── Home.jsx        # Ana sayfa
-│   │   ├── Movies.jsx      # Filmler sayfası
-│   │   ├── TVSeries.jsx    # Diziler sayfası
-│   │   ├── Search.jsx      # Arama sayfası
-│   │   ├── MovieDetail.jsx # Film detay sayfası
-│   │   ├── TVDetail.jsx    # Dizi detay sayfası
-│   │   ├── Player.jsx      # Video player sayfası
-│   │   └── ...
-│   ├── App.jsx             # Ana uygulama bileşeni
-│   └── main.jsx            # Uygulama giriş noktası
-├── server.js               # Express backend server
-├── package.json            # Proje bağımlılıkları
-├── vite.config.js          # Vite konfigürasyonu
-└── README.md               # Proje dokümantasyonu
+1. **GitHub'a push edin**
+```bash
+git add .
+git commit -m "Ready for deployment"
+git push origin main
 ```
 
-## 🔧 API Endpoints
+2. **Render.com'da yeni servis oluşturun**
+   - Repository'nizi bağlayın
+   - `render.yaml` dosyası otomatik olarak algılanacak
+   - Environment variables'ları ayarlayın:
+     - `TMDB_API_KEY`: TMDB API anahtarınız
+     - `NODE_ENV`: production
+     - `PORT`: 10000 (Render otomatik ayarlar)
 
-### TMDB API Endpoints
-- `GET /api/trending/movies` - Trend filmler
-- `GET /api/trending/tv` - Trend diziler
-- `GET /api/movies/popular` - Popüler filmler
-- `GET /api/tv/popular` - Popüler diziler
-- `GET /api/search` - Film/dizi arama
-- `GET /api/movie/:id` - Film detayları
-- `GET /api/tv/:id` - Dizi detayları
-- `GET /api/genres/movies` - Film türleri
-- `GET /api/genres/tv` - Dizi türleri
-- `GET /api/movies/genre/:genreId` - Tür bazında filmler
-- `GET /api/tv/genre/:genreId` - Tür bazında diziler
+3. **Deploy edin**
+   - Render otomatik olarak build ve deploy işlemini başlatacak
+   - Build komutu: `npm run render-build`
+   - Start komutu: `npm start`
 
-### VidSrc API Endpoints
-- `GET /api/stream/movie/:id` - Film streaming linkleri
-- `GET /api/stream/tv/:id` - Dizi streaming linkleri
-
-## 🎨 Özellikler Detayı
-
-### Ana Sayfa
-- Hero section ile öne çıkan içerik
-- Trend filmler ve diziler
-- Popüler içerikler
-- Responsive grid layout
-
-### Filmler/Diziler Sayfaları
-- Grid ve liste görünümü
-- Kategori filtreleme
-- Sayfalama
-- Arama entegrasyonu
-
-### Detay Sayfaları
-- Kapsamlı içerik bilgileri
-- Streaming linkleri
-- Yapım şirketleri
-- Oyuncu bilgileri
-
-### Player Sayfası
-- Gömülü video player
-- Çoklu streaming kaynağı
-- Alternatif linkler
-- Responsive tasarım
-
-### Arama Sistemi
-- Gerçek zamanlı arama
-- Film ve dizi ayrımı
-- Sonuç filtreleme
-- Tab bazlı görünüm
-
-## 📱 Responsive Tasarım
-
-- **Desktop**: Tam özellikli deneyim
-- **Tablet**: Optimize edilmiş layout
-- **Mobile**: Touch-friendly arayüz
-
-## 🚀 Production Build
+### Manuel Deployment
 
 ```bash
-# Frontend build
+# Production build oluşturun
 npm run build
 
-# Production sunucusu başlat
+# Sunucuyu başlatın
 npm start
 ```
 
+### Environment Variables (Render)
+
+Render dashboard'unda aşağıdaki environment variables'ları ayarlayın:
+
+```env
+TMDB_API_KEY=your_tmdb_api_key_here
+NODE_ENV=production
+PORT=10000
+VITE_AGORA_APP_ID=your_agora_app_id_here
+```
+
+3. **Ortam değişkenlerini ayarlayın**
+`.env` dosyası oluşturun:
+```env
+TMDB_API_KEY=your_tmdb_api_key_here
+TMDB_ACCESS_TOKEN=your_tmdb_access_token_here
+PORT=5000
+```
+
+4. **Uygulamayı başlatın**
+```bash
+npm run dev
+```
+
+5. **Tarayıcıda açın**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
+
+## 🔧 API Endpoints
+
+### Filmler
+- `GET /api/trending` - Trend filmler ve diziler
+- `GET /api/movie/:id` - Film detayları
+- `GET /api/movies/genre/:genreId` - Türe göre filmler
+- `GET /api/search` - Arama
+
+### TV Dizileri
+- `GET /api/tv/:id` - Dizi detayları
+- `GET /api/tv/:id/seasons` - Sezon bilgileri
+- `GET /api/tv/genre/:genreId` - Türe göre diziler
+
+### Streaming
+- `GET /api/proxy/:type/:id` - Güvenli streaming proxy
+- `GET /api/subtitles/:query` - Altyazı arama
+
+## 📁 Proje Yapısı
+
+```
+film-dizi-izle/
+├── src/
+│   ├── components/          # React bileşenleri
+│   │   ├── Header.jsx       # Ana navigasyon
+│   │   └── MovieCard.jsx    # Film/dizi kartları
+│   ├── pages/               # Sayfa bileşenleri
+│   │   ├── Home.jsx         # Ana sayfa
+│   │   ├── Movies.jsx       # Filmler sayfası
+│   │   ├── TVSeries.jsx     # Diziler sayfası
+│   │   ├── Search.jsx       # Arama sayfası
+│   │   ├── MovieDetail.jsx  # Film detay sayfası
+│   │   ├── TVDetail.jsx     # Dizi detay sayfası
+│   │   └── Player.jsx       # Video oynatıcı
+│   ├── App.jsx              # Ana uygulama bileşeni
+│   └── main.jsx             # Giriş noktası
+├── public/                  # Statik dosyalar
+├── server.js                # Express server
+├── package.json             # Proje bağımlılıkları
+└── vite.config.js           # Vite konfigürasyonu
+```
+
+## 🎨 Özellik Detayları
+
+### Ana Sayfa
+- Trend filmler ve diziler
+- Kategorilere göre öne çıkan içerikler
+- Hızlı erişim menüsü
+
+### Film/Dizi Sayfaları
+- Tür bazlı filtreleme
+- Sayfalama ile kolay gezinme
+- Arama ve sıralama seçenekleri
+
+### Detay Sayfaları
+- Kapsamlı film/dizi bilgileri
+- Oyuncu kadrosu ve ekip
+- Fragmanlar ve görseller
+- Benzer içerik önerileri
+
+### Video Oynatıcı
+- Çoklu streaming servisi desteği
+- Güvenli proxy sistemi
+- Altyazı desteği
+- Responsive tasarım
+
 ## 🔒 Güvenlik
 
+- HTML sanitization
 - CORS koruması
-- API key güvenliği
-- Input validation
-- Error handling
+- Güvenli proxy sistemi
+- Zararlı script filtreleme
 
 ## 🤝 Katkıda Bulunma
 
-1. Fork yapın
+1. Fork edin
 2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push yapın (`git push origin feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
 5. Pull Request oluşturun
 
 ## 📄 Lisans
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+
+## 📞 İletişim
+
+- GitHub: [@samkofte](https://github.com/samkofte)
+- Proje Linki: [https://github.com/samkofte/film-dizi-izle](https://github.com/samkofte/film-dizi-izle)
 
 ## 🙏 Teşekkürler
 
 - [TMDB](https://www.themoviedb.org/) - Film ve dizi verileri için
-- [VidSrc](https://vidsrc.me/) - Streaming API'si için
-- [Lucide](https://lucide.dev/) - İkonlar için
-
-## 📞 İletişim
-
-Proje ile ilgili sorularınız için issue açabilirsiniz.
+- [React](https://reactjs.org/) - UI kütüphanesi için
+- [Vite](https://vitejs.dev/) - Geliştirme ortamı için
 
 ---
 
-**Not**: Bu proje eğitim amaçlı geliştirilmiştir. Telif hakkı korumalı içeriklerin kullanımı için gerekli izinleri almanız gerekir. 
+⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!

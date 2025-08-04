@@ -85,19 +85,55 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.genre-filters h3 {
+/* Filter Type Selector */
+.filter-type-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.filter-type-btn {
+  flex: 1;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filter-type-btn.active {
+  background: #667eea;
+  color: white;
+}
+
+.filter-type-btn:hover:not(.active) {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.genre-filters h3,
+.provider-filters h3 {
   margin: 0 0 15px 0;
   color: white;
   font-size: 1.2rem;
 }
 
-.genre-buttons {
+.genre-buttons,
+.provider-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.genre-btn {
+.genre-btn,
+.provider-btn {
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -106,20 +142,38 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.genre-btn:hover {
+.genre-btn:hover,
+.provider-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
-.genre-btn.active {
+.genre-btn.active,
+.provider-btn.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-color: #667eea;
   color: white;
   font-weight: 600;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
   transform: translateY(-2px);
+}
+
+/* Provider specific styles */
+.provider-btn {
+  padding: 10px 16px;
+  min-height: 44px;
+}
+
+.provider-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
 }
 
 /* TV Shows Grid */

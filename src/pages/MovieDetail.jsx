@@ -40,6 +40,44 @@ const MovieDetail = () => {
     }
   };
 
+  const addToRecentlyWatched = () => {
+    try {
+      const recentItem = {
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        backdrop_path: movie.backdrop_path,
+        vote_average: movie.vote_average,
+        release_date: movie.release_date,
+        overview: movie.overview,
+        type: 'movie',
+        watchedAt: new Date().toISOString()
+      };
+
+      let recentlyWatched = [];
+      const stored = localStorage.getItem('recentlyWatched');
+      if (stored) {
+        recentlyWatched = JSON.parse(stored);
+      }
+
+      // Remove if already exists
+      recentlyWatched = recentlyWatched.filter(item => !(item.id === movie.id && item.type === 'movie'));
+      
+      // Add to beginning
+      recentlyWatched.unshift(recentItem);
+      
+      // Keep only last 20 items
+      recentlyWatched = recentlyWatched.slice(0, 20);
+      
+      localStorage.setItem('recentlyWatched', JSON.stringify(recentlyWatched));
+      
+      // Trigger storage event for other tabs
+      window.dispatchEvent(new Event('storage'));
+    } catch (error) {
+      console.error('Error adding to recently watched:', error);
+    }
+  };
+
   const formatRuntime = (minutes) => {
     if (!minutes) return 'Bilinmiyor';
     const hours = Math.floor(minutes / 60);
@@ -128,7 +166,11 @@ const MovieDetail = () => {
               </div>
 
               <div className="movie-actions">
-                <Link to={`/watch/movie/${movie.id}`} className="btn btn-primary">
+                <Link 
+                  to={`/watch/movie/${movie.id}`} 
+                  className="btn btn-primary"
+                  onClick={addToRecentlyWatched}
+                >
                   <Play size={20} />
                   İzle (embed.su)
                 </Link>
@@ -330,4 +372,4 @@ const MovieDetail = () => {
   );
 };
 
-export default MovieDetail; 
+export default MovieDetail;
