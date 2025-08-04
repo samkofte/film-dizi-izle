@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const path = require('path');
 const ImprovedWatchPartyServer = require('./src/server/improvedWatchPartyServer');
 require('dotenv').config(); // Environment variables
 
@@ -949,18 +950,11 @@ Gerçek altyazı entegrasyonu için API geliştirmesi gerekiyor.`;
   }
 });
 
-// API olmayan route'lar için 404 döndür
+// Serve frontend for all non-API routes
 app.get('*', (req, res) => {
-  // Eğer API route'u değilse, frontend'e yönlendir
+  // Eğer API route'u değilse, frontend index.html'i serve et
   if (!req.path.startsWith('/api/')) {
-    const frontendUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://src-movie.onrender.com' 
-      : 'http://localhost:3000';
-    res.status(404).json({ 
-      error: 'Route not found', 
-      message: `This is a backend API server. Please use the frontend at ${frontendUrl}`,
-      frontend: frontendUrl
-    });
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   } else {
     res.status(404).json({ error: 'API endpoint not found' });
   }
