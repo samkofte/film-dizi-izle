@@ -980,7 +980,7 @@ app.listen(PORT, () => {
 });
 
 // Start Improved Watch Party Server
-// Production'da aynı port kullan, development'da farklı port
-const watchPartyPort = process.env.NODE_ENV === 'production' ? PORT : 8080;
+// Use different port for WebSocket server to avoid conflicts
+const watchPartyPort = process.env.NODE_ENV === 'production' ? (parseInt(PORT) + 1) : 8080;
 const watchPartyServer = new ImprovedWatchPartyServer(watchPartyPort);
 console.log(`Improved Watch Party Server started on port ${watchPartyPort}`);
