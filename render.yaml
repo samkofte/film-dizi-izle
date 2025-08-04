@@ -1,6 +1,7 @@
 services:
   - type: web
     name: vidsrc-streaming-site
+    # Force redeploy
     env: node
     plan: free
     rootDir: .
