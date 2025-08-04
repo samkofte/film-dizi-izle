@@ -2,7 +2,7 @@
   "name": "vidsrc-streaming-site",
   "version": "1.0.0",
   "description": "Movie and TV series streaming website with VidSrc integration",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
