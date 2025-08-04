@@ -953,10 +953,13 @@ Gerçek altyazı entegrasyonu için API geliştirmesi gerekiyor.`;
 app.get('*', (req, res) => {
   // Eğer API route'u değilse, frontend'e yönlendir
   if (!req.path.startsWith('/api/')) {
+    const frontendUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://src-movie.onrender.com' 
+      : 'http://localhost:3000';
     res.status(404).json({ 
       error: 'Route not found', 
-      message: 'This is a backend API server. Please use the frontend at http://localhost:3000',
-      frontend: 'http://localhost:3000'
+      message: `This is a backend API server. Please use the frontend at ${frontendUrl}`,
+      frontend: frontendUrl
     });
   } else {
     res.status(404).json({ error: 'API endpoint not found' });
@@ -964,11 +967,20 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  const frontendUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://src-movie.onrender.com' 
+    : 'http://localhost:3000';
+  const backendUrl = process.env.NODE_ENV === 'production' 
+    ? `https://src-movie.onrender.com/api` 
+    : `http://localhost:${PORT}/api`;
+  
   console.log(`Server running on port ${PORT}`);
-  console.log(`Frontend: http://localhost:3000`);
-  console.log(`Backend API: http://localhost:${PORT}/api`);
+  console.log(`Frontend: ${frontendUrl}`);
+  console.log(`Backend API: ${backendUrl}`);
 });
 
 // Start Improved Watch Party Server
-const watchPartyServer = new ImprovedWatchPartyServer(8080);
-console.log('Improved Watch Party Server started on port 8080');
+// Production'da aynı port kullan, development'da farklı port
+const watchPartyPort = process.env.NODE_ENV === 'production' ? PORT : 8080;
+const watchPartyServer = new ImprovedWatchPartyServer(watchPartyPort);
+console.log(`Improved Watch Party Server started on port ${watchPartyPort}`);

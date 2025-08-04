@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Play, ExternalLink, Users } from 'lucide-react';
-import WatchParty from '../components/WatchParty';
 import './Player.css';
 
 const Player = () => {
@@ -595,7 +594,10 @@ const Player = () => {
         : content?.title || content?.name;
       
       // OpenSubtitles API proxy endpoint'i (CORS sorunu için backend üzerinden)
-      const response = await fetch(`http://localhost:5000/api/subtitles/search`, {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://src-movie.onrender.com/api/subtitles/search'
+        : 'http://localhost:5000/api/subtitles/search';
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -628,7 +630,10 @@ const Player = () => {
   const loadSubtitleToPlayer = async (subtitleUrl, language) => {
     try {
       // Altyazı dosyasını indir
-      const response = await fetch(`http://localhost:5000/api/subtitles/download`, {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://src-movie.onrender.com/api/subtitles/download'
+        : 'http://localhost:5000/api/subtitles/download';
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

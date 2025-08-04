@@ -40,7 +40,9 @@ const WatchParty = ({ contentId, contentType, season, episode, currentPlayer, on
 
     try {
       console.log('🔌 WebSocket bağlantısı kuruluyor...');
-      const wsUrl = 'ws://localhost:8080';
+      const wsUrl = process.env.NODE_ENV === 'production' 
+        ? 'wss://src-movie.onrender.com'
+        : 'ws://localhost:8080';
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {

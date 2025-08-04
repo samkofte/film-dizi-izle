@@ -514,8 +514,11 @@ class ImprovedWatchPartyServer {
 
   startServer() {
     this.server.listen(this.port, () => {
+      const serverUrl = process.env.NODE_ENV === 'production' 
+        ? `https://src-movie.onrender.com`
+        : `http://localhost:${this.port}`;
       console.log(`Improved Watch Party Server running on port ${this.port}`);
-      console.log(`HTTP endpoints available at http://localhost:${this.port}`);
+      console.log(`HTTP endpoints available at ${serverUrl}`);
       console.log(`WebSocket server ready for connections`);
     });
 
