@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, 'dist')));
+// Serve static files from dist directory in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.resolve(__dirname, 'dist')));
+}
 
 // Güvenlik ayarları
 const SECURITY_CONFIG = {
@@ -290,9 +293,9 @@ async function fetchPlayerData(type, id, season = 1, episode = 1) {
         case 'mappletv':
           // MappleTV için URL oluştur
           if (type === 'tv') {
-            url = `${service.url}/tv/${id}/${season}/${episode}`;
+            url = `${service.url}/watch/tv/${id}-${season}-${episode}`;
           } else {
-            url = `${service.url}/movie/${id}`;
+            url = `${service.url}/watch/movie/${id}`;
           }
           break;
         
@@ -954,8 +957,12 @@ Gerçek altyazı entegrasyonu için API geliştirmesi gerekiyor.`;
 app.get('*', (req, res) => {
   // Eğer API route'u değilse, frontend index.html'i serve et
   if (!req.path.startsWith('/api/')) {
-    const indexPath = path.resolve(__dirname, 'dist', 'index.html');
-    res.sendFile(indexPath);
+    if (process.env.NODE_ENV === 'production') {
+      const indexPath = path.resolve(__dirname, 'dist', 'index.html');
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).json({ error: 'Frontend not available in development mode' });
+    }
   } else {
     res.status(404).json({ error: 'API endpoint not found' });
   }
@@ -976,6 +983,6 @@ app.listen(PORT, () => {
 
 // Start Improved Watch Party Server
 // Use different port for WebSocket server to avoid conflicts
-const watchPartyPort = process.env.NODE_ENV === 'production' ? (parseInt(PORT) + 1) : 8080;
+const watchPartyPort = process.env.NODE_ENV === 'production' ? (parseInt(PORT) + 1) : 8081;
 const watchPartyServer = new ImprovedWatchPartyServer(watchPartyPort);
 console.log(`Improved Watch Party Server started on port ${watchPartyPort}`);

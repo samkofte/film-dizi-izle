@@ -13,7 +13,9 @@ const MovieCard = ({ item, type = 'movie' }) => {
     vote_average,
     release_date,
     first_air_date,
-    overview
+    overview,
+    season,
+    episode
   } = item;
 
   const displayTitle = title || name;
@@ -46,9 +48,9 @@ const MovieCard = ({ item, type = 'movie' }) => {
         />
         <div className="movie-card-overlay">
           <Link 
-            to={`/watch/${type}/${id}`} 
+            to={type === 'tv' && season && episode ? `/watch/${type}/${id}?season=${season}&episode=${episode}` : `/watch/${type}/${id}`} 
             className="play-button"
-            title={`${displayTitle} izle (embed.su)`}
+            title={type === 'tv' && season && episode ? `${displayTitle} S${season}E${episode} izle` : `${displayTitle} izle (embed.su)`}
           >
             <Play size={24} />
           </Link>
@@ -69,6 +71,11 @@ const MovieCard = ({ item, type = 'movie' }) => {
             <Calendar size={14} />
             {formatDate(displayDate)}
           </span>
+          {type === 'tv' && season && episode && (
+            <span className="movie-card-episode">
+              S{season}E{episode}
+            </span>
+          )}
         </div>
         
         {overview && (
@@ -81,4 +88,4 @@ const MovieCard = ({ item, type = 'movie' }) => {
   );
 };
 
-export default MovieCard; 
+export default MovieCard;

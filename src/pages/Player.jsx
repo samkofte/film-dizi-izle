@@ -12,8 +12,14 @@ const Player = () => {
   const [selectedStream, setSelectedStream] = useState(null);
   const [error, setError] = useState(null);
   const [seasons, setSeasons] = useState([]);
-  const [selectedSeason, setSelectedSeason] = useState(season ? parseInt(season) : 1);
-  const [selectedEpisode, setSelectedEpisode] = useState(episode ? parseInt(episode) : 1);
+  const [selectedSeason, setSelectedSeason] = useState(
+    season ? parseInt(season) : 
+    searchParams.get('season') ? parseInt(searchParams.get('season')) : 1
+  );
+  const [selectedEpisode, setSelectedEpisode] = useState(
+    episode ? parseInt(episode) : 
+    searchParams.get('episode') ? parseInt(searchParams.get('episode')) : 1
+  );
   const [streamingSources, setStreamingSources] = useState([]);
   const [currentSourceIndex, setCurrentSourceIndex] = useState(0);
   const [subtitles, setSubtitles] = useState([]);
@@ -99,6 +105,19 @@ const Player = () => {
     // Kaydedilmiş izleme ilerlemesini yükle
     loadSavedProgress();
   }, [type, id]);
+
+  // URL parametrelerinin değiştiğinde state'leri güncelle
+  useEffect(() => {
+    const urlSeason = season ? parseInt(season) : searchParams.get('season') ? parseInt(searchParams.get('season')) : null;
+    const urlEpisode = episode ? parseInt(episode) : searchParams.get('episode') ? parseInt(searchParams.get('episode')) : null;
+    
+    if (urlSeason && urlSeason !== selectedSeason) {
+      setSelectedSeason(urlSeason);
+    }
+    if (urlEpisode && urlEpisode !== selectedEpisode) {
+      setSelectedEpisode(urlEpisode);
+    }
+  }, [season, episode, searchParams]);
 
   // İçerik yüklendiğinde altyazı ara
   useEffect(() => {
@@ -346,7 +365,7 @@ const Player = () => {
       case 'mappletv':
         // MappleTV için URL oluştur
         if (type === 'tv') {
-          return `https://mappletv.uk/watch/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+          return `https://mappletv.uk/watch/tv/${id}-${selectedSeason}-${selectedEpisode}`;
         }
         return `https://mappletv.uk/watch/movie/${id}`;
       
@@ -450,7 +469,7 @@ const Player = () => {
       case 'mappletv':
         // MappleTV için URL oluştur
         if (type === 'tv') {
-          return `https://mappletv.uk/watch/tv/${id}/${selectedSeason}/${selectedEpisode}`;
+          return `https://mappletv.uk/watch/tv/${id}-${selectedSeason}-${selectedEpisode}`;
         }
         return `https://mappletv.uk/watch/movie/${id}`;
       

@@ -230,6 +230,38 @@
   border: 1px solid rgba(102, 126, 234, 0.1);
 }
 
+.recently-watched .grid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 5px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.5) rgba(0, 0, 0, 0.1);
+}
+
+.recently-watched .grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.recently-watched .grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.recently-watched .grid::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 10px;
+}
+
+.recently-watched .movie-card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
 .trending-movies {
   background: linear-gradient(135deg, rgba(255, 107, 107, 0.03) 0%, rgba(238, 90, 36, 0.03) 100%);
 }
@@ -408,6 +440,10 @@
   .recently-watched {
     margin: 10px;
   }
+  
+  .recently-watched .movie-card {
+    width: 160px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -445,5 +481,9 @@
   .icon-wrapper {
     width: 40px;
     height: 40px;
+  }
+  
+  .recently-watched .movie-card {
+    width: 140px;
   }
 }
