@@ -9,6 +9,7 @@
     "server": "node server.js",
     "client": "vite",
     "build": "vite build",
+    "render-build": "npm install && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
