@@ -14,9 +14,9 @@ app.use(cors());
 app.use(express.json());
 // Serve static files from dist directory in production
 if (process.env.NODE_ENV === 'production') {
-  // In Render, __dirname points to /opt/render/project/src, but dist is in project root
-  const distPath = path.resolve(__dirname, '..', 'dist');
+  const distPath = path.resolve(__dirname, 'dist');
   console.log('Serving static files from:', distPath);
+  console.log('Directory exists:', require('fs').existsSync(distPath));
   app.use(express.static(distPath));
 }
 
@@ -961,7 +961,8 @@ app.get('*', (req, res) => {
   // Eğer API route'u değilse, frontend index.html'i serve et
   if (!req.path.startsWith('/api/')) {
     if (process.env.NODE_ENV === 'production') {
-      const indexPath = path.resolve(__dirname, '..', 'dist', 'index.html');
+      const indexPath = path.resolve(__dirname, 'dist', 'index.html');
+      console.log('Index file exists:', require('fs').existsSync(indexPath));
       console.log('Serving index.html from:', indexPath);
       try {
         res.sendFile(indexPath);
