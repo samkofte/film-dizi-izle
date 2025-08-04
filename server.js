@@ -14,7 +14,9 @@ app.use(cors());
 app.use(express.json());
 // Serve static files from dist directory in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.resolve(__dirname, 'dist')));
+  const distPath = path.resolve(__dirname, 'dist');
+  console.log('Serving static files from:', distPath);
+  app.use(express.static(distPath));
 }
 
 // Güvenlik ayarları
@@ -959,7 +961,13 @@ app.get('*', (req, res) => {
   if (!req.path.startsWith('/api/')) {
     if (process.env.NODE_ENV === 'production') {
       const indexPath = path.resolve(__dirname, 'dist', 'index.html');
-      res.sendFile(indexPath);
+      console.log('Serving index.html from:', indexPath);
+      try {
+        res.sendFile(indexPath);
+      } catch (error) {
+        console.error('Error serving index.html:', error);
+        res.status(500).json({ error: 'Error serving application' });
+      }
     } else {
       res.status(404).json({ error: 'Frontend not available in development mode' });
     }
