@@ -6,7 +6,7 @@ services:
     plan: free
     rootDir: .
     buildCommand: npm ci --cache /tmp/empty-cache && npm run build && pwd && ls -la && ls -la dist/ && find . -name "index.html" -type f && find . -name "server.js" -type f && echo "=== Checking if dist/index.html exists ===" && ls -la dist/index.html || echo "dist/index.html NOT FOUND"
-    startCommand: node src/server.js
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
