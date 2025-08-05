@@ -961,6 +961,7 @@ app.get('*', (req, res) => {
   // Eğer API route'u değilse, frontend index.html'i serve et
   if (!req.path.startsWith('/api/')) {
     if (process.env.NODE_ENV === 'production') {
+      console.log('Current __dirname:', __dirname);
       const indexPath = path.resolve(__dirname, 'dist', 'index.html');
       console.log('Index file exists:', require('fs').existsSync(indexPath));
       console.log('Serving index.html from:', indexPath);
