@@ -1,7 +1,7 @@
 services:
   - type: web
     name: vidsrc-streaming-site
-    # Force redeploy
+    # Force redeploy - clear cache v2
     env: node
     plan: free
     rootDir: .
