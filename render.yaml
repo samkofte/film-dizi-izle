@@ -5,7 +5,7 @@ services:
     env: node
     plan: free
     rootDir: .
-    buildCommand: npm ci --cache /tmp/empty-cache && npm run build && ls -la && ls -la src/
+    buildCommand: npm ci --cache /tmp/empty-cache && npm run build && pwd && ls -la && ls -la src/ && find . -name "server.js" -type f
     startCommand: npm start
     envVars:
       - key: NODE_ENV
