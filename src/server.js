@@ -963,6 +963,7 @@ app.get('*', (req, res) => {
     if (process.env.NODE_ENV === 'production') {
       console.log('Current __dirname:', __dirname);
       const indexPath = path.resolve(__dirname, '..', 'dist', 'index.html');
+      console.log('Resolved index path:', indexPath);
       console.log('Index file exists:', require('fs').existsSync(indexPath));
       console.log('Serving index.html from:', indexPath);
       try {
