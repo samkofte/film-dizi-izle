@@ -3,7 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const path = require('path');
-const ImprovedWatchPartyServer = require('./improvedWatchPartyServer');
+const ImprovedWatchPartyServer = require('../improvedWatchPartyServer');
 require('dotenv').config(); // Environment variables
 
 const app = express();
